@@ -10,28 +10,26 @@ export default function Header({ activeTab, setActiveTab, isMuted, setIsMuted })
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-cyan-500/20 backdrop-blur-2xl px-2 sm:px-6 py-1.5 sm:py-3 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 shrink-0">
+    <header className="sticky top-0 z-40 w-full glass-panel border-b border-cyan-500/20 backdrop-blur-2xl px-2 sm:px-6 py-1 sm:py-2.5 flex flex-row items-center justify-between gap-1 sm:gap-4 shrink-0">
       {/* Top Row on Mobile: Logo + Title */}
-      <div className="flex items-center justify-between w-full sm:w-auto">
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-purple-600 flex items-center justify-center text-slate-950 font-black shadow-[0_0_15px_rgba(0,240,255,0.4)] shrink-0">
-            <Atom className="w-4 h-4 sm:w-6 sm:h-6 text-slate-950 animate-spin-slow" />
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-purple-600 flex items-center justify-center text-slate-950 font-black shadow-[0_0_15px_rgba(0,240,255,0.4)] shrink-0">
+          <Atom className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-slate-950 animate-spin-slow" />
+        </div>
+        <div>
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            <h1 className="text-[11px] sm:text-base md:text-lg font-extrabold tracking-tight text-white flex items-center gap-1 whitespace-nowrap">
+              LAXMAN'S <span className="neon-text-blue font-mono font-black">PERIODIC VISUALIZER</span>
+            </h1>
           </div>
-          <div>
-            <div className="flex items-center gap-1 sm:gap-1.5">
-              <h1 className="text-xs sm:text-lg font-extrabold tracking-tight text-white flex items-center gap-1">
-                LAXMAN'S <span className="neon-text-blue font-mono font-black">PERIODIC VISUALIZER</span>
-              </h1>
-            </div>
-            <p className="text-[10px] sm:text-xs text-slate-400 font-mono hidden sm:flex items-center gap-1 mt-0.5">
-              <Sparkles className="w-3 h-3 text-cyan-400" /> 3D & AR Interactive Element & Molecular Chemistry Lab
-            </p>
-          </div>
+          <p className="text-[10px] text-slate-400 font-mono hidden md:flex items-center gap-1 mt-0.5">
+            <Sparkles className="w-3 h-3 text-cyan-400" /> 3D & AR Interactive Element & Molecular Chemistry Lab
+          </p>
         </div>
       </div>
 
-      {/* Navigation Tabs (Full Width Segmented Control on Mobile!) */}
-      <nav className="w-full sm:w-auto flex items-center justify-between gap-1 bg-slate-950/90 p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-cyan-500/30 overflow-x-auto scrollbar-none">
+      {/* Navigation Tabs */}
+      <nav className="flex items-center gap-0.5 sm:gap-1 bg-slate-950/90 p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-cyan-500/30 overflow-x-auto scrollbar-none shrink-0">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

@@ -347,22 +347,22 @@ export default function App() {
                     </div>
 
                     {/* Key Metrics Grid */}
-                    <div className="grid grid-cols-2 gap-2.5 text-xs">
-                      <div className="bg-cyan-950/20 p-3 rounded-2xl border border-cyan-500/30">
-                        <span className="text-slate-400 font-mono block text-[10px] uppercase tracking-wider font-bold">Molecular Mass</span>
-                        <span className="text-sm font-extrabold text-cyan-300 font-mono mt-0.5 block">{selectedMolecule.molecularMass}</span>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-cyan-950/20 p-2.5 rounded-2xl border border-cyan-500/30">
+                        <span className="text-slate-400 font-mono block text-[9px] uppercase tracking-wider font-bold truncate">Molecular Mass</span>
+                        <span className="text-xs sm:text-sm font-extrabold text-cyan-300 font-mono mt-0.5 block truncate">{selectedMolecule.molecularMass}</span>
                       </div>
-                      <div className="bg-purple-950/20 p-3 rounded-2xl border border-purple-500/30">
-                        <span className="text-slate-400 font-mono block text-[10px] uppercase tracking-wider font-bold">Bond Angle</span>
-                        <span className="text-sm font-extrabold text-purple-300 font-mono mt-0.5 block">{selectedMolecule.bondAngle}</span>
+                      <div className="bg-purple-950/20 p-2.5 rounded-2xl border border-purple-500/30">
+                        <span className="text-slate-400 font-mono block text-[9px] uppercase tracking-wider font-bold truncate">Bond Angle</span>
+                        <span className="text-xs sm:text-sm font-extrabold text-purple-300 font-mono mt-0.5 block truncate">{selectedMolecule.bondAngle}</span>
                       </div>
-                      <div className="bg-emerald-950/20 p-3 rounded-2xl border border-emerald-500/30">
-                        <span className="text-slate-400 font-mono block text-[10px] uppercase tracking-wider font-bold">3D Geometry</span>
-                        <span className="text-xs font-bold text-emerald-300 mt-0.5 block">{selectedMolecule.shape}</span>
+                      <div className="bg-emerald-950/20 p-2.5 rounded-2xl border border-emerald-500/30">
+                        <span className="text-slate-400 font-mono block text-[9px] uppercase tracking-wider font-bold truncate">3D Geometry</span>
+                        <span className="text-xs font-bold text-emerald-300 mt-0.5 block truncate">{selectedMolecule.shape}</span>
                       </div>
-                      <div className="bg-amber-950/20 p-3 rounded-2xl border border-amber-500/30">
-                        <span className="text-slate-400 font-mono block text-[10px] uppercase tracking-wider font-bold">Dipole Moment</span>
-                        <span className="text-xs font-bold text-amber-300 mt-0.5 block">{selectedMolecule.dipole}</span>
+                      <div className="bg-amber-950/20 p-2.5 rounded-2xl border border-amber-500/30">
+                        <span className="text-slate-400 font-mono block text-[9px] uppercase tracking-wider font-bold truncate">Dipole Moment</span>
+                        <span className="text-xs font-bold text-amber-300 mt-0.5 block truncate">{selectedMolecule.dipole}</span>
                       </div>
                     </div>
 

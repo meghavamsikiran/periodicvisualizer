@@ -540,27 +540,27 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col space-y-1.5 sm:space-y-2 overflow-hidden h-[calc(100vh-80px)] sm:h-[calc(100vh-105px)]">
+    <div className="w-full flex-1 flex flex-col space-y-1 sm:space-y-1.5 overflow-hidden h-[calc(100vh-52px)] sm:h-[calc(100vh-70px)]">
       {/* Top HUD Toolbar: Formula Builder + Experiment Recipes */}
-      <div className={`p-1 sm:p-2 rounded-xl sm:rounded-2xl border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-1 sm:gap-2 shrink-0 transition-all ${
+      <div className={`px-1.5 py-1 sm:p-2 rounded-xl sm:rounded-2xl border flex flex-row items-center justify-between gap-1.5 sm:gap-2 shrink-0 transition-all ${
         isCameraActive ? 'bg-slate-950/80 border-cyan-400/40 backdrop-blur-md' : 'glass-panel border-cyan-500/30'
       }`}>
         {/* Row 1: Formula Input + Build + Reset */}
-        <div className="flex items-center gap-1 w-full sm:w-auto">
-          <form onSubmit={handleFormulaSubmit} className="flex items-center gap-1 flex-1 sm:flex-initial">
-            <div className="relative flex-1">
-              <Wand2 className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-cyan-400" />
+        <div className="flex items-center gap-1 flex-1 sm:flex-initial min-w-0">
+          <form onSubmit={handleFormulaSubmit} className="flex items-center gap-1 flex-1 sm:flex-initial min-w-0">
+            <div className="relative flex-1 min-w-0">
+              <Wand2 className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-cyan-400" />
               <input
                 type="text"
-                placeholder="Formula (e.g. H2O, H2O2, NaCl)..."
+                placeholder="Formula (e.g. H2O, CaCO3)..."
                 value={formulaInput}
                 onChange={(e) => setFormulaInput(e.target.value)}
-                className="pl-8 pr-2 py-1 rounded-xl bg-slate-900/90 border border-cyan-400/60 text-cyan-300 font-mono text-[11px] sm:text-xs focus:outline-none focus:ring-1 focus:ring-cyan-400 font-bold placeholder-slate-400 w-full sm:w-72 shadow-inner"
+                className="pl-6 pr-1.5 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-slate-900/90 border border-cyan-400/60 text-cyan-300 font-mono text-[10px] sm:text-xs focus:outline-none focus:ring-1 focus:ring-cyan-400 font-bold placeholder-slate-400 w-full sm:w-64 truncate shadow-inner"
               />
             </div>
             <button
               type="submit"
-              className="px-2.5 sm:px-3 py-1 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-slate-950 font-black text-[11px] sm:text-xs hover:brightness-110 transition-all shadow-md shrink-0"
+              className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-slate-950 font-black text-[10px] sm:text-xs hover:brightness-110 transition-all shadow-md shrink-0"
             >
               Build
             </button>
@@ -569,39 +569,39 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
           {/* Reset button compact */}
           <button
             onClick={handleRecycle}
-            className="flex items-center gap-1 px-2 py-1 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-[10px] sm:text-xs font-bold transition-all shadow-md shrink-0"
+            className="flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-[9px] sm:text-xs font-bold transition-all shadow-md shrink-0"
             title="Reset spatial chamber"
           >
-            <RefreshCw className="w-3 h-3" />
+            <RefreshCw className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
             <span className="hidden sm:inline">Reset</span>
           </button>
 
           {/* Desktop-only +118 Elements button in top toolbar */}
           <button
             onClick={() => setIsElementPickerOpen(true)}
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gradient-to-r from-purple-600/30 to-cyan-600/30 hover:brightness-125 border border-cyan-400 text-cyan-200 text-xs font-extrabold transition-all shadow-md"
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gradient-to-r from-purple-600/30 to-cyan-600/30 hover:brightness-125 border border-cyan-400 text-cyan-200 text-xs font-extrabold transition-all shadow-md shrink-0"
           >
             <Atom className="w-3.5 h-3.5 text-cyan-400 animate-spin-slow" /> + 118 Elements
           </button>
         </div>
 
         {/* Experiment Recipes Bar - Compact scrollable line */}
-        <div className="flex items-center gap-1 overflow-x-auto py-0.5 scrollbar-none text-[10px] sm:text-xs max-w-full">
+        <div className="hidden xs:flex items-center gap-1 overflow-x-auto py-0.5 scrollbar-none text-[9px] sm:text-xs shrink-0 max-w-[45vw] sm:max-w-none">
           <span className="text-[9px] font-mono text-slate-400 font-bold shrink-0 hidden sm:inline">Recipes:</span>
           {experimentRecipes.map((rec) => (
             <button
               key={rec.id}
               onClick={() => handleLoadRecipe(rec)}
-              className="flex items-center gap-1 px-2 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-slate-900/80 hover:bg-cyan-950/80 border border-white/10 hover:border-cyan-400/60 text-slate-200 font-medium transition-all shrink-0 hover:scale-105"
+              className="flex items-center gap-1 px-1.5 py-0.5 rounded-md sm:rounded-xl bg-slate-900/80 hover:bg-cyan-950/80 border border-white/10 hover:border-cyan-400/60 text-slate-200 font-medium transition-all shrink-0 hover:scale-105 whitespace-nowrap text-[9px] sm:text-xs"
             >
-              <Play className="w-2.5 h-2.5 text-cyan-400 fill-cyan-400" /> {rec.name}
+              <Play className="w-2 h-2 text-cyan-400 fill-cyan-400" /> {rec.name}
             </button>
           ))}
         </div>
       </div>
 
       {/* Main 3D Spatial Canvas Area */}
-      <div className={`relative flex-1 w-full rounded-2xl sm:rounded-3xl border overflow-hidden flex flex-col justify-between transition-all ${
+      <div className={`relative flex-1 w-full rounded-2xl sm:rounded-3xl border overflow-hidden flex flex-col justify-between transition-all min-h-0 ${
         isCameraActive ? 'bg-transparent border-cyan-400/30' : 'glass-panel border-cyan-500/20'
       }`}>
         {/* Toast Notification */}

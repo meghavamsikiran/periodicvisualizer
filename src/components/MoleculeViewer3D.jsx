@@ -197,23 +197,23 @@ export default function MoleculeViewer3D({ molecule }) {
 
   return (
     <div className="w-full h-[420px] md:h-[500px] relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 shadow-[0_0_35px_rgba(0,240,255,0.15)] flex flex-col">
-      {/* Top HUD Toolbar */}
-      <div className="absolute top-4 left-4 right-4 z-10 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+      {/* Top HUD Toolbar - Clean Non-Overlapping Mobile & Desktop Layout */}
+      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pointer-events-none">
         {/* Title Badge */}
-        <div className="bg-slate-950/90 px-4 py-2.5 rounded-2xl border border-cyan-500/30 backdrop-blur-xl pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+        <div className="bg-slate-950/90 p-2 sm:px-4 sm:py-2.5 rounded-2xl border border-cyan-500/30 backdrop-blur-xl pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.5)] max-w-full">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-black font-mono text-cyan-400">{molecule.formula}</span>
-            <span className="text-sm font-bold text-white">{molecule.name}</span>
+            <span className="text-base sm:text-xl font-black font-mono text-cyan-400">{molecule.formula}</span>
+            <span className="text-xs sm:text-sm font-bold text-white truncate">{molecule.name}</span>
           </div>
-          <p className="text-[11px] text-slate-300 font-mono mt-0.5 flex items-center gap-2">
+          <p className="text-[10px] sm:text-[11px] text-slate-300 font-mono mt-0.5 flex items-center gap-1.5 flex-wrap">
             <span>Mass: <strong className="text-cyan-300">{molecule.molecularMass}</strong></span>
-            <span className="text-slate-500">•</span>
+            <span className="text-slate-500 hidden sm:inline">•</span>
             <span>Bond: <strong className="text-purple-300">{molecule.bondType}</strong></span>
           </p>
         </div>
 
         {/* View Mode Switcher Segment Pills */}
-        <div className="flex items-center gap-1 bg-slate-950/90 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl pointer-events-auto shadow-lg">
+        <div className="flex items-center gap-1 bg-slate-950/90 p-1 rounded-xl sm:rounded-2xl border border-white/10 backdrop-blur-xl pointer-events-auto shadow-lg max-w-full overflow-x-auto scrollbar-none">
           {[
             { id: 'ballstick', label: 'Ball & Stick' },
             { id: 'spacefill', label: 'Space-Fill' },
@@ -225,7 +225,7 @@ export default function MoleculeViewer3D({ molecule }) {
                 soundFx.playClick();
                 setViewMode(mode.id);
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all whitespace-nowrap ${
                 viewMode === mode.id
                   ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-[0_0_12px_rgba(0,240,255,0.4)]'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
