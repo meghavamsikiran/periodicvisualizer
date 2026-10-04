@@ -196,11 +196,11 @@ export default function MoleculeViewer3D({ molecule }) {
   };
 
   return (
-    <div className="w-full h-[420px] md:h-[500px] relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 shadow-[0_0_35px_rgba(0,240,255,0.15)] flex flex-col">
+    <div className="w-full h-[320px] sm:h-[420px] md:h-[500px] short:h-[calc(100vh-60px)] max-h-[82vh] relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 shadow-[0_0_35px_rgba(0,240,255,0.15)] flex flex-col">
       {/* Top HUD Toolbar - Clean Non-Overlapping Mobile & Desktop Layout */}
-      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pointer-events-none">
+      <div className="absolute top-1.5 sm:top-4 left-1.5 sm:left-4 right-1.5 sm:right-4 z-10 flex flex-col sm:flex-row short:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-2 pointer-events-none">
         {/* Title Badge */}
-        <div className="bg-slate-950/90 p-2 sm:px-4 sm:py-2.5 rounded-2xl border border-cyan-500/30 backdrop-blur-xl pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.5)] max-w-full">
+        <div className="bg-slate-950/90 p-1.5 sm:p-2.5 short-compact-py px-2.5 sm:px-4 rounded-2xl border border-cyan-500/30 backdrop-blur-xl pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.5)] max-w-full">
           <div className="flex items-center gap-2">
             <span className="text-base sm:text-xl font-black font-mono text-cyan-400">{molecule.formula}</span>
             <span className="text-xs sm:text-sm font-bold text-white truncate">{molecule.name}</span>
@@ -211,6 +211,7 @@ export default function MoleculeViewer3D({ molecule }) {
             <span>Bond: <strong className="text-purple-300">{molecule.bondType}</strong></span>
           </p>
         </div>
+
 
         {/* View Mode Switcher Segment Pills */}
         <div className="flex items-center gap-1 bg-slate-950/90 p-1 rounded-xl sm:rounded-2xl border border-white/10 backdrop-blur-xl pointer-events-auto shadow-lg max-w-full overflow-x-auto scrollbar-none">

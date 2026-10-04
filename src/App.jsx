@@ -396,8 +396,8 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="w-full glass-panel border-t border-white/10 py-1.5 px-4 text-center text-[10px] text-slate-400 z-10 shrink-0">
+      {/* Footer - Hidden on short landscape screens to keep 3D viewport completely unblocked */}
+      <footer className="w-full glass-panel border-t border-white/10 py-1 px-4 text-center text-[10px] text-slate-400 z-10 shrink-0 hidden md:block landscape:hidden">
         <p className="flex items-center justify-center gap-1.5 font-mono">
           <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" /> Laxman's Periodic Visualizer • 3D & AR Interactive Element & Molecular Chemistry Lab
         </p>

@@ -540,9 +540,9 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col space-y-1 sm:space-y-1.5 overflow-hidden h-[calc(100vh-52px)] sm:h-[calc(100vh-70px)]">
+    <div className="w-full flex-1 flex flex-col space-y-1 sm:space-y-1.5 overflow-hidden h-[calc(100vh-42px)] sm:h-[calc(100vh-68px)] short:h-[calc(100vh-36px)]">
       {/* Top HUD Toolbar: Formula Builder + Experiment Recipes */}
-      <div className={`px-1.5 py-1 sm:p-2 rounded-xl sm:rounded-2xl border flex flex-row items-center justify-between gap-1.5 sm:gap-2 shrink-0 transition-all ${
+      <div className={`px-1.5 py-1 sm:p-2 short-compact-py rounded-xl sm:rounded-2xl border flex flex-row items-center justify-between gap-1.5 sm:gap-2 shrink-0 transition-all ${
         isCameraActive ? 'bg-slate-950/80 border-cyan-400/40 backdrop-blur-md' : 'glass-panel border-cyan-500/30'
       }`}>
         {/* Row 1: Formula Input + Build + Reset */}
@@ -579,14 +579,14 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
           {/* Desktop-only +118 Elements button in top toolbar */}
           <button
             onClick={() => setIsElementPickerOpen(true)}
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gradient-to-r from-purple-600/30 to-cyan-600/30 hover:brightness-125 border border-cyan-400 text-cyan-200 text-xs font-extrabold transition-all shadow-md shrink-0"
+            className="hidden sm:flex short-hide items-center gap-1 px-2.5 py-1 rounded-xl bg-gradient-to-r from-purple-600/30 to-cyan-600/30 hover:brightness-125 border border-cyan-400 text-cyan-200 text-xs font-extrabold transition-all shadow-md shrink-0"
           >
             <Atom className="w-3.5 h-3.5 text-cyan-400 animate-spin-slow" /> + 118 Elements
           </button>
         </div>
 
-        {/* Experiment Recipes Bar - Compact scrollable line */}
-        <div className="hidden xs:flex items-center gap-1 overflow-x-auto py-0.5 scrollbar-none text-[9px] sm:text-xs shrink-0 max-w-[45vw] sm:max-w-none">
+        {/* Experiment Recipes Bar - Compact scrollable line (hidden on short height viewports to save vertical 3D space) */}
+        <div className="hidden xs:flex short-hide items-center gap-1 overflow-x-auto py-0.5 scrollbar-none text-[9px] sm:text-xs shrink-0 max-w-[45vw] sm:max-w-none">
           <span className="text-[9px] font-mono text-slate-400 font-bold shrink-0 hidden sm:inline">Recipes:</span>
           {experimentRecipes.map((rec) => (
             <button
@@ -611,10 +611,11 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
           </div>
         )}
 
-        {/* Sleek Minimal AR Control Panel (Ultra-Compact 28px height on mobile portrait, full dashboard on desktop) */}
-        <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 right-1.5 sm:right-2 z-20 bg-slate-950/90 border border-cyan-400/40 backdrop-blur-xl p-1.5 sm:p-2.5 rounded-xl sm:rounded-3xl shadow-[0_0_30px_rgba(0,240,255,0.15)] transition-all">
-          {/* Mobile Single-Line Compact Bar (< 640px) */}
-          <div className="flex sm:hidden items-center justify-between gap-1 text-[10px] font-mono">
+        {/* Sleek Minimal AR Control Panel (Ultra-Compact 28px height on mobile portrait and mobile landscape, full dashboard on desktop height) */}
+        <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 right-1.5 sm:right-2 z-20 bg-slate-950/90 border border-cyan-400/40 backdrop-blur-xl p-1.5 sm:p-2.5 short-compact-py rounded-xl sm:rounded-3xl shadow-[0_0_30px_rgba(0,240,255,0.15)] transition-all">
+          {/* Mobile Single-Line Compact Bar (< 640px OR short viewport height < 540px) */}
+          <div className="flex sm:hidden short-show-compact items-center justify-between gap-1 text-[10px] font-mono">
+
             {/* Left: Atom Count + Chemical Match */}
             <div className="flex items-center gap-1 overflow-hidden truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0" />
@@ -724,8 +725,8 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
             </div>
           )}
 
-          {/* Full Integrated Desktop Dashboard Layout (Visible on screens >= 640px) */}
-          <div className="hidden sm:flex flex-col gap-1.5">
+          {/* Full Integrated Desktop Dashboard Layout (Visible on screens >= 640px AND height >= 540px) */}
+          <div className="hidden sm:flex short-hide flex-col gap-1.5">
             {/* Top Row: Chamber Title & Primary Controls */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 overflow-hidden">
@@ -865,7 +866,11 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
         </div>
 
         {/* Quick Spawn Bottom Palette Bar */}
-        <div className="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-between gap-2 py-2 px-3 bg-slate-950/90 rounded-2xl border border-cyan-400/30 backdrop-blur-xl overflow-x-auto shadow-2xl">
+        <div className={`absolute z-20 flex items-center justify-between gap-2 transition-all ${
+          synthesizedMolecule
+            ? (isSpecsExpanded ? 'bottom-20 sm:bottom-28' : 'bottom-9 sm:bottom-12')
+            : 'bottom-1.5 sm:bottom-3'
+        } left-1.5 sm:left-3 right-1.5 sm:right-3 py-1 sm:py-2 px-2 sm:px-3 short-compact-py bg-slate-950/90 rounded-2xl border border-cyan-400/30 backdrop-blur-xl overflow-x-auto shadow-2xl`}>
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
             <span className="text-xs font-mono text-slate-400 font-bold shrink-0 mr-1 hidden md:inline">Quick Spawn:</span>
             {popularElements.map(elem => {
@@ -945,7 +950,7 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
 
         {/* Reaction Synthesis Details Footer - Collapsible on Mobile to leave 3D Canvas 100% Unobstructed! */}
         {synthesizedMolecule && (
-          <div className="p-2 sm:p-3 bg-slate-950/95 border-t border-purple-500/40 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 text-xs z-20 shrink-0 shadow-2xl transition-all">
+          <div className="p-1.5 sm:p-3 short-compact-py bg-slate-950/95 border-t border-purple-500/40 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3 text-xs z-20 shrink-0 shadow-2xl transition-all">
             <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto">
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="font-extrabold text-cyan-300 text-xs sm:text-sm">
@@ -963,14 +968,14 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
               {/* Mobile Specs Expand/Collapse Toggle Button */}
               <button
                 onClick={() => setIsSpecsExpanded((prev) => !prev)}
-                className="sm:hidden px-2 py-0.5 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-400/40 text-cyan-300 text-[10px] font-mono font-bold flex items-center gap-1 shrink-0 shadow-md"
+                className="px-2 py-0.5 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-400/40 text-cyan-300 text-[10px] font-mono font-bold flex items-center gap-1 shrink-0 shadow-md"
               >
                 <span>{isSpecsExpanded ? 'Hide ▲' : 'Details ▼'}</span>
               </button>
             </div>
 
-            {/* Expanded Description Specs Note (Always visible on desktop, toggleable on mobile!) */}
-            <div className={`${isSpecsExpanded ? 'block' : 'hidden sm:block'} space-y-1 pt-1 sm:pt-0 border-t sm:border-t-0 border-white/10`}>
+            {/* Expanded Description Specs Note (Visible on desktop height, toggleable on short viewports!) */}
+            <div className={`${isSpecsExpanded ? 'block' : 'hidden sm:block short-hide'} space-y-1 pt-1 sm:pt-0 border-t sm:border-t-0 border-white/10`}>
               <p className="text-[10.5px] sm:text-xs text-slate-300 leading-relaxed font-sans">{synthesizedMolecule.classNote}</p>
               <span className="inline-block text-[9.5px] sm:text-[10px] font-mono font-bold text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded-md border border-cyan-400/40">
                 ✨ Chamber Open: Click +Element to expand build!
@@ -979,6 +984,7 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
           </div>
         )}
       </div>
+
 
       {/* Full 118 Element Spawner Drawer Modal */}
       {isElementPickerOpen && (

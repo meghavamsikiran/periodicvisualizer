@@ -80,3 +80,34 @@ body {
 .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }
+
+/* Short Viewport Height Optimizations (Mobile Landscape Mode) */
+@media (max-height: 540px) {
+  .short-hide {
+    display: none !important;
+  }
+  .short-show-compact {
+    display: flex !important;
+  }
+  .short-compact-py {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+  .short-compact-my {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  .short-compact-text {
+    font-size: 0.65rem !important;
+    line-height: 0.85rem !important;
+  }
+  .short-compact-logo {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+  .short-compact-modal {
+    max-height: 98vh !important;
+    padding: 0.5rem !important;
+  }
+}
+
