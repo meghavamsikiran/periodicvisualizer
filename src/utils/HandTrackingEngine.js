@@ -65,27 +65,29 @@ export class HandTrackingEngine {
 
         this.handsDetector.onResults(this.handleHandResults.bind(this));
 
-        if (window.Camera) {
-          this.cameraInstance = new window.Camera(this.videoElement, {
-            onFrame: async () => {
-              if (this.isTracking && this.handsDetector && this.videoElement && this.videoElement.readyState >= 2) {
-                try {
-                  await this.handsDetector.send({ image: this.videoElement });
-                } catch (err) {
-                  // Catch frame processing glitches silently
-                }
+        // Smooth requestAnimationFrame frame processing loop reading from videoElement stream (Front or Rear camera)
+        const processFrame = async () => {
+          if (this.isTracking && this.handsDetector && this.videoElement && !this.videoElement.paused && !this.videoElement.ended) {
+            if (this.videoElement.readyState >= 2) {
+              try {
+                await this.handsDetector.send({ image: this.videoElement });
+              } catch (err) {
+                // Frame processing exception ignore
               }
-            },
-            width: 1280,
-            height: 720
-          });
-          this.cameraInstance.start();
-        }
+            }
+          }
+          if (this.isTracking) {
+            this.animFrameId = requestAnimationFrame(processFrame);
+          }
+        };
+
+        this.animFrameId = requestAnimationFrame(processFrame);
       }
     } catch (err) {
       console.warn('Hand tracking initialization error:', err);
     }
   }
+
 
   handleHandResults(results) {
     if (!this.isTracking) return;
@@ -320,10 +322,16 @@ export class HandTrackingEngine {
   stop() {
     this.isTracking = false;
     this.isPinching = false;
+    if (this.animFrameId) {
+      cancelAnimationFrame(this.animFrameId);
+      this.animFrameId = null;
+    }
     if (this.cameraInstance) {
       try { this.cameraInstance.stop(); } catch (e) {}
+      this.cameraInstance = null;
     }
   }
+
 
   loadScript(src) {
     return new Promise((resolve, reject) => {

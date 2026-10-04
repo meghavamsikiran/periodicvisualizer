@@ -15,28 +15,63 @@ export default function CameraAROverlay({ isCameraOn, facingMode = 'user', isInv
     if (isCameraOn) {
       const getMedia = async () => {
         try {
-          // Stop any previous active hand tracking or camera stream
+          // Stop any previous active hand tracking or camera stream tracks
           if (handEngineRef.current) {
             handEngineRef.current.stop();
             handEngineRef.current = null;
           }
 
+          if (videoRef.current && videoRef.current.srcObject) {
+            const activeTracks = videoRef.current.srcObject.getTracks();
+            activeTracks.forEach((track) => track.stop());
+            videoRef.current.srcObject = null;
+          }
+
           let stream;
           const isBackCamera = facingMode === 'environment';
 
-          try {
-            stream = await navigator.mediaDevices.getUserMedia({
-              video: {
-                facingMode: isBackCamera ? { ideal: 'environment' } : 'user',
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+          if (isBackCamera) {
+            try {
+              // Try exact environment constraint for multi-lens mobile devices
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                  facingMode: { exact: 'environment' },
+                  width: { ideal: 1280 },
+                  height: { ideal: 720 }
+                }
+              });
+            } catch (e1) {
+              try {
+                // Try ideal environment constraint
+                stream = await navigator.mediaDevices.getUserMedia({
+                  video: {
+                    facingMode: { ideal: 'environment' },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                  }
+                });
+              } catch (e2) {
+                try {
+                  stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                  });
+                } catch (e3) {
+                  stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                }
               }
-            });
-          } catch (e1) {
-            // Fallback constraint
-            stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: isBackCamera ? 'environment' : 'user' }
-            }).catch(() => navigator.mediaDevices.getUserMedia({ video: true }));
+            }
+          } else {
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                  facingMode: 'user',
+                  width: { ideal: 1280 },
+                  height: { ideal: 720 }
+                }
+              });
+            } catch (e1) {
+              stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            }
           }
 
           currentStream = stream;
@@ -121,10 +156,12 @@ export default function CameraAROverlay({ isCameraOn, facingMode = 'user', isInv
   // Update hand tracking direction dynamically without interrupting active video stream!
   useEffect(() => {
     if (handEngineRef.current) {
+      handEngineRef.current.setBackCamera(facingMode === 'environment');
       handEngineRef.current.setInvertX(isInvertHandX);
       handEngineRef.current.setInvertY(isInvertHandY);
     }
-  }, [isInvertHandX, isInvertHandY]);
+  }, [facingMode, isInvertHandX, isInvertHandY]);
+
 
   const isBack = facingMode === 'environment';
 
