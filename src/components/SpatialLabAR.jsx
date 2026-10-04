@@ -29,6 +29,7 @@ function SpatialHandControlledGroup({ children, handState, resetTrigger, isRoomA
 
   useFrame(() => {
     if (!groupRef.current) return;
+    if (isRoomAnchored) return; // Completely freeze group transform updates when Placed!
 
     if (handState && handState.isActive) {
       // Direct 3D AR viewport target coordinates from HandTrackingEngine
@@ -50,7 +51,7 @@ function SpatialHandControlledGroup({ children, handState, resetTrigger, isRoomA
       }
 
       // 2. SINGLE HAND PINCH (Thumb + Index 👌): GRAB & MOVE (Smooth 1:1 Hand Translation)
-      if (handState.isPinching && !isRoomAnchored) {
+      if (handState.isPinching) {
         const deltaX = targetX - groupRef.current.position.x;
         const deltaY = targetY - groupRef.current.position.y;
 
@@ -84,8 +85,9 @@ function SpatialHandControlledGroup({ children, handState, resetTrigger, isRoomA
   );
 }
 
+
 // 3D Atom Node in Spatial Workbench
-function SpatialAtomNode({ atom, onSelectAtom }) {
+function SpatialAtomNode({ atom, onSelectAtom, isRoomAnchored = false }) {
   const meshRef = useRef();
   const ringGroupRef = useRef();
 
@@ -93,6 +95,7 @@ function SpatialAtomNode({ atom, onSelectAtom }) {
   const elemData = ELEMENTS.find(e => e.symbol === atom.symbol) || {};
 
   useFrame(({ clock }) => {
+    if (isRoomAnchored) return;
     const t = clock.getElapsedTime() + atom.index * 0.2;
     if (meshRef.current) {
       meshRef.current.rotation.y = t * 0.5;
@@ -103,49 +106,58 @@ function SpatialAtomNode({ atom, onSelectAtom }) {
     }
   });
 
+  const nodeBody = (
+    <group onClick={(e) => {
+      e.stopPropagation();
+      onSelectAtom(elemData);
+    }}>
+      {/* Core Nucleus Sphere */}
+      <Sphere ref={meshRef} args={[atom.radius, 32, 32]}>
+        <meshStandardMaterial
+          color={hexColor}
+          emissive={hexColor}
+          emissiveIntensity={0.7}
+          roughness={0.15}
+          metalness={0.85}
+        />
+      </Sphere>
+
+      {/* Orbiting Electron Shell Ring */}
+      <group ref={ringGroupRef}>
+        <Ring args={[atom.radius * 1.35, atom.radius * 1.42, 32]}>
+          <meshBasicMaterial color="#ffffff" opacity={0.4} transparent side={THREE.DoubleSide} />
+        </Ring>
+        <mesh position={[atom.radius * 1.4, 0, 0]}>
+          <sphereGeometry args={[atom.radius * 0.15, 12, 12]} />
+          <meshBasicMaterial color="#ffe600" />
+        </mesh>
+      </group>
+
+      {/* 3D Symbol Label */}
+      <Text
+        position={[0, 0, atom.radius + 0.05]}
+        fontSize={atom.radius * 0.75}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        fontWeight="bold"
+      >
+        {atom.symbol}
+      </Text>
+    </group>
+  );
+
+  if (isRoomAnchored) {
+    return <group position={atom.position}>{nodeBody}</group>;
+  }
+
   return (
     <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.3} position={atom.position}>
-      <group onClick={(e) => {
-        e.stopPropagation();
-        onSelectAtom(elemData);
-      }}>
-        {/* Core Nucleus Sphere */}
-        <Sphere ref={meshRef} args={[atom.radius, 32, 32]}>
-          <meshStandardMaterial
-            color={hexColor}
-            emissive={hexColor}
-            emissiveIntensity={0.7}
-            roughness={0.15}
-            metalness={0.85}
-          />
-        </Sphere>
-
-        {/* Orbiting Electron Shell Ring */}
-        <group ref={ringGroupRef}>
-          <Ring args={[atom.radius * 1.35, atom.radius * 1.42, 32]}>
-            <meshBasicMaterial color="#ffffff" opacity={0.4} transparent side={THREE.DoubleSide} />
-          </Ring>
-          <mesh position={[atom.radius * 1.4, 0, 0]}>
-            <sphereGeometry args={[atom.radius * 0.15, 12, 12]} />
-            <meshBasicMaterial color="#ffe600" />
-          </mesh>
-        </group>
-
-        {/* 3D Symbol Label */}
-        <Text
-          position={[0, 0, atom.radius + 0.05]}
-          fontSize={atom.radius * 0.75}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="middle"
-          fontWeight="bold"
-        >
-          {atom.symbol}
-        </Text>
-      </group>
+      {nodeBody}
     </Float>
   );
 }
+
 
 // 3D Bond Cylinder connecting two atom positions
 function SpatialBondCylinder({ start, end, type = 'single' }) {
@@ -192,7 +204,7 @@ function SpatialBondCylinder({ start, end, type = 'single' }) {
 }
 
 // Render Synthesized 3D Molecule
-function SynthesizedMolecule3D({ molecule, isAutoRotate = true }) {
+function SynthesizedMolecule3D({ molecule, isAutoRotate = true, isRoomAnchored = false }) {
   const groupRef = useRef();
 
   const autoScale = useMemo(() => {
@@ -207,10 +219,14 @@ function SynthesizedMolecule3D({ molecule, isAutoRotate = true }) {
 
   useFrame((state, delta) => {
     if (groupRef.current) {
-      if (isAutoRotate) {
+      if (isAutoRotate && !isRoomAnchored) {
         groupRef.current.rotation.y += delta * 0.4;
       }
-      groupRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.5) * 0.08;
+      if (!isRoomAnchored) {
+        groupRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.5) * 0.08;
+      } else {
+        groupRef.current.position.y = 0;
+      }
     }
   });
 
@@ -257,7 +273,7 @@ function SynthesizedMolecule3D({ molecule, isAutoRotate = true }) {
 }
 
 // Render Dynamic 3D Spatial Lattice / Custom Atoms
-function DynamicSpatialMolecule3D({ dynamicSpatialMolecule, onSelectAtom, isAutoRotate = true }) {
+function DynamicSpatialMolecule3D({ dynamicSpatialMolecule, onSelectAtom, isAutoRotate = true, isRoomAnchored = false }) {
   const groupRef = useRef();
 
   const autoScale = useMemo(() => {
@@ -271,8 +287,11 @@ function DynamicSpatialMolecule3D({ dynamicSpatialMolecule, onSelectAtom, isAuto
   }, [dynamicSpatialMolecule]);
 
   useFrame((state, delta) => {
-    if (groupRef.current && isAutoRotate) {
+    if (groupRef.current && isAutoRotate && !isRoomAnchored) {
       groupRef.current.rotation.y += delta * 0.4;
+    }
+    if (groupRef.current && isRoomAnchored) {
+      groupRef.current.position.y = 0;
     }
   });
 
@@ -283,6 +302,7 @@ function DynamicSpatialMolecule3D({ dynamicSpatialMolecule, onSelectAtom, isAuto
           key={atom.index}
           atom={atom}
           onSelectAtom={onSelectAtom}
+          isRoomAnchored={isRoomAnchored}
         />
       ))}
 
@@ -301,6 +321,7 @@ function DynamicSpatialMolecule3D({ dynamicSpatialMolecule, onSelectAtom, isAuto
     </group>
   );
 }
+
 
 export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggleCameraFacing, isInvertHandX, onToggleInvertHandX, isInvertHandY, onToggleInvertHandY, handState, spawnElementSymbol, onClearSpawnElement }) {
   const [workbenchElements, setWorkbenchElements] = useState([]);
@@ -656,9 +677,9 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
             </div>
           </div>
 
-          {/* Expanded Mobile Controls Tray (Only visible on mobile when toggled!) */}
+          {/* Expanded Mobile Controls Tray (Visible on mobile portrait or mobile landscape when toggled!) */}
           {showMobileControls && (
-            <div className="flex sm:hidden items-center justify-between gap-1 pt-1.5 mt-1 border-t border-white/10 overflow-x-auto scrollbar-none animate-fade-in text-[9px] font-mono font-bold">
+            <div className="flex sm:hidden short-show-compact items-center justify-between gap-1 pt-1.5 mt-1 border-t border-white/10 overflow-x-auto scrollbar-none animate-fade-in text-[9px] font-mono font-bold">
               {onToggleInvertHandX && (
                 <button
                   onClick={() => {
@@ -935,18 +956,26 @@ export default function SpatialLabAR({ isCameraActive, cameraFacingMode, onToggl
           >
             {/* Render Preset 3D Molecule OR Dynamic 3D Spatial Lattice */}
             {synthesizedMolecule ? (
-              <SynthesizedMolecule3D molecule={synthesizedMolecule} isAutoRotate={isAutoRotate} />
+              <SynthesizedMolecule3D molecule={synthesizedMolecule} isAutoRotate={isAutoRotate} isRoomAnchored={isRoomAnchored} />
             ) : (
               <DynamicSpatialMolecule3D
                 dynamicSpatialMolecule={dynamicSpatialMolecule}
                 onSelectAtom={(el) => setSelectedAtomInspect(el)}
                 isAutoRotate={isAutoRotate}
+                isRoomAnchored={isRoomAnchored}
               />
             )}
           </SpatialHandControlledGroup>
 
-          <OrbitControls enableZoom={true} minDistance={3} maxDistance={15} />
+          <OrbitControls
+            enableRotate={!isRoomAnchored}
+            enablePan={!isRoomAnchored}
+            enableZoom={!isRoomAnchored}
+            minDistance={3}
+            maxDistance={15}
+          />
         </Canvas>
+
 
         {/* Reaction Synthesis Details Footer - Collapsible on Mobile to leave 3D Canvas 100% Unobstructed! */}
         {synthesizedMolecule && (
